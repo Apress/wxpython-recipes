@@ -1,0 +1,245 @@
+diff --git a/.DS_Store b/.DS_Store
+index 214fd88..97e7e1b 100644
+Binary files a/.DS_Store and b/.DS_Store differ
+diff --git a/chapter_13_using_objects_in_widgets/recipe_13_1_using_objectlistview/main.py b/chapter_13_using_objects_in_widgets/recipe_13_1_using_objectlistview/main.py
+index 9a0e5e5..3055837 100644
+--- a/chapter_13_using_objects_in_widgets/recipe_13_1_using_objectlistview/main.py
++++ b/chapter_13_using_objects_in_widgets/recipe_13_1_using_objectlistview/main.py
+@@ -48,7 +48,7 @@ class MainPanel(wx.Panel):
+         """
+         Update the object list view widget
+         """
+-        print "updating..."
++        print("updating...")
+         product_dict = [{"title":"Core Python Programming", "author":"Wesley Chun",
+                          "isbn":"0132269937", "mfg":"Prentice Hall"},
+                         {"title":"Python Programming for the Absolute Beginner",
+diff --git a/chapter_15_working_with_sizers/recipe_15_1_get_children_widgets_from_sizer/main.py b/chapter_15_working_with_sizers/recipe_15_1_get_children_widgets_from_sizer/main.py
+index b28f36c..f7a861b 100644
+--- a/chapter_15_working_with_sizers/recipe_15_1_get_children_widgets_from_sizer/main.py
++++ b/chapter_15_working_with_sizers/recipe_15_1_get_children_widgets_from_sizer/main.py
+@@ -30,7 +30,7 @@ class MyApp(wx.Frame):
+ 
+         for child in children:
+             widget = child.GetWindow()
+-            print widget
++            print(widget)
+             if isinstance(widget, wx.TextCtrl):
+                 widget.Clear()
+ 
+diff --git a/chapter_16_threads_and_timers/recipe_16_2_using_threads/main.py b/chapter_16_threads_and_timers/recipe_16_2_using_threads/main.py
+index 973b507..ec2c412 100644
+--- a/chapter_16_threads_and_timers/recipe_16_2_using_threads/main.py
++++ b/chapter_16_threads_and_timers/recipe_16_2_using_threads/main.py
+@@ -29,6 +29,7 @@ class TestThread(Thread):
+         Send time to GUI
+         """
+         amtOfTime = (amt + 1) * 10
++        print("Sending time elapsed: {}".format(amtOfTime))
+         pub.sendMessage("update", msg=amtOfTime)
+ 
+ 
+diff --git a/chapter_20_bonus_recipes/recipe_20_2_context_managers/builtin_context.py b/chapter_20_bonus_recipes/recipe_20_2_context_managers/builtin_context.py
+index 4b1adfa..936eadf 100644
+--- a/chapter_20_bonus_recipes/recipe_20_2_context_managers/builtin_context.py
++++ b/chapter_20_bonus_recipes/recipe_20_2_context_managers/builtin_context.py
+@@ -30,7 +30,7 @@ class MyPanel(wx.Panel):
+             if dlg.ShowModal() == wx.ID_OK:
+                 data = dlg.GetColourData()
+                 color = str(data.GetColour().Get())
+-                print 'You selected: %s\n' % color
++                print('You selected: %s\n' % color)
+ 
+     def onOpenBusyInfo(self, event):
+         """
+diff --git a/chapter_20_bonus_recipes/recipe_20_2_context_managers/custom_context.py b/chapter_20_bonus_recipes/recipe_20_2_context_managers/custom_context.py
+index cae34dc..a965d41 100644
+--- a/chapter_20_bonus_recipes/recipe_20_2_context_managers/custom_context.py
++++ b/chapter_20_bonus_recipes/recipe_20_2_context_managers/custom_context.py
+@@ -25,20 +25,28 @@ class MyPanel(wx.Panel):
+ 
+     def onOpenFile(self, event):
+         """"""
++        style = 0
++        try:
++            # wxPython 3+ syntax
++            style = wx.FD_OPEN | wx.FD_MULTIPLE | wx.FD_CHANGE_DIR
++        except AttributeError:
++            # wxPython <= 2.8
++            style = wx.OPEN | wx.MULTIPLE | wx.CHANGE_DIR
++
+         wildcard = "Python source (*.py)|*.py|" \
+             "All files (*.*)|*.*"
+         kwargs = {'message':"Choose a file",
+                   'defaultDir':os.path.dirname(os.path.abspath( __file__ )),
+                   'defaultFile':"",
+                   'wildcard':wildcard,
+-                  'style':wx.OPEN | wx.MULTIPLE | wx.CHANGE_DIR
++                  'style':style
+                   }
+         with ContextFileDialog(self, **kwargs) as dlg:
+             if dlg.ShowModal() == wx.ID_OK:
+                 paths = dlg.GetPaths()
+-                print "You chose the following file(s):"
++                print("You chose the following file(s):")
+                 for path in paths:
+-                    print path
++                    print(path)
+ 
+ 
+ class MyFrame(wx.Frame):
+diff --git a/chapter_2_working_with_images/recipe_2_1_take_screenshot/main.py b/chapter_2_working_with_images/recipe_2_1_take_screenshot/main.py
+index bb7eb10..4ede8d9 100644
+--- a/chapter_2_working_with_images/recipe_2_1_take_screenshot/main.py
++++ b/chapter_2_working_with_images/recipe_2_1_take_screenshot/main.py
+@@ -39,32 +39,37 @@ class MyForm(wx.Frame):
+         # Create a DC for the whole screen area
+         dcScreen = wx.ScreenDC()
+ 
+-        # Create a Bitmap that will hold the screenshot image later on
+-        # Note that the Bitmap must have a size big enough to hold the screenshot
+-        # -1 means using the current default colour depth
+-        bmp = wx.EmptyBitmap(rect.width, rect.height)
+-
+-        #Create a memory DC that will be used for actually taking the screenshot
+-        memDC = wx.MemoryDC()
+-
+-        # Tell the memory DC to use our Bitmap
+-        # all drawing action on the memory DC will go to the Bitmap now
+-        memDC.SelectObject(bmp)
+-
+-        # Blit (in this case copy) the actual screen on the memory DC
+-        # and thus the Bitmap
+-        memDC.Blit( 0, # Copy to this X coordinate
+-                    0, # Copy to this Y coordinate
+-                    rect.width, # Copy this width
+-                    rect.height, # Copy this height
+-                    dcScreen, # Where to copy from
+-                    rect.x, # What's the X offset in the original DC?
+-                    rect.y  # What's the Y offset in the original DC?
+-                    )
+-
+-        # Select the Bitmap out of the memory DC by selecting a new
+-        # uninitialized Bitmap
+-        memDC.SelectObject(wx.NullBitmap)
++        # On Windows and Mac, we can just call GetAsBitmap on the wx.ScreenDC
++        # and it will give us what we want.
++        bmp = dcScreen.GetAsBitmap().GetSubBitmap(rect)
++
++        if not bmp.IsOk():
++            # Create a Bitmap that will hold the screenshot image later on
++            # Note that the Bitmap must have a size big enough to hold the screenshot
++            # -1 means using the current default colour depth
++            bmp = wx.EmptyBitmap(rect.width, rect.height)
++
++            #Create a memory DC that will be used for actually taking the screenshot
++            memDC = wx.MemoryDC()
++
++            # Tell the memory DC to use our Bitmap
++            # all drawing action on the memory DC will go to the Bitmap now
++            memDC.SelectObject(bmp)
++
++            # Blit (in this case copy) the actual screen on the memory DC
++            # and thus the Bitmap
++            memDC.Blit( 0, # Copy to this X coordinate
++                        0, # Copy to this Y coordinate
++                        rect.width, # Copy this width
++                        rect.height, # Copy this height
++                        dcScreen, # Where to copy from
++                        rect.x, # What's the X offset in the original DC?
++                        rect.y  # What's the Y offset in the original DC?
++                        )
++
++            # Select the Bitmap out of the memory DC by selecting a new
++            # uninitialized Bitmap
++            memDC.SelectObject(wx.NullBitmap)
+ 
+         img = bmp.ConvertToImage()
+         fileName = "myImage.png"
+diff --git a/chapter_2_working_with_images/recipe_2_1_take_screenshot/myImage.png b/chapter_2_working_with_images/recipe_2_1_take_screenshot/myImage.png
+index ae2e7a7..4a1b43a 100644
+Binary files a/chapter_2_working_with_images/recipe_2_1_take_screenshot/myImage.png and b/chapter_2_working_with_images/recipe_2_1_take_screenshot/myImage.png differ
+diff --git a/chapter_3_special_effects/recipe_3_2_dark_mode/dark_mode.py b/chapter_3_special_effects/recipe_3_2_dark_mode/dark_mode.py
+index a3fc428..47cc5f2 100644
+--- a/chapter_3_special_effects/recipe_3_2_dark_mode/dark_mode.py
++++ b/chapter_3_special_effects/recipe_3_2_dark_mode/dark_mode.py
+@@ -53,12 +53,12 @@ def darkMode(self, normalPanelColor):
+         dark_mode = False
+     for widget in widgets:
+         if dark_mode:
+-            if isinstance(widget, ObjectListView) or isinstance(widget, wx.ListCtrl):
++            if isinstance(widget, wx.ListCtrl) or (ObjectListView and isinstance(widget, ObjectListView)):
+                 darkRowFormatter(widget, dark=True)
+             widget.SetBackgroundColour("Dark Grey")
+             widget.SetForegroundColour("White")
+         else:
+-            if isinstance(widget, ObjectListView) or isinstance(widget, wx.ListCtrl):
++            if isinstance(widget, wx.ListCtrl) or (ObjectListView and isinstance(widget, ObjectListView)):
+                 darkRowFormatter(widget)
+                 widget.SetBackgroundColour("White")
+                 widget.SetForegroundColour("Black")
+diff --git a/chapter_6_simple_widgets/recipe_6_1_about_box/main_phoenix.py b/chapter_6_simple_widgets/recipe_6_1_about_box/main_phoenix.py
+index 9009aba..16e1634 100644
+--- a/chapter_6_simple_widgets/recipe_6_1_about_box/main_phoenix.py
++++ b/chapter_6_simple_widgets/recipe_6_1_about_box/main_phoenix.py
+@@ -1,3 +1,5 @@
++import webbrowser
++
+ import wx
+ import wx.adv
+ import wx.html
+@@ -115,10 +117,14 @@ class AboutDlg(wx.Frame):
+             '<p><b><a href="http://www.wxpython.org">wxPython 2.8</a></b></p>'
+         )
+ 
++
+ class wxHTML(wx.html.HtmlWindow):
++    def __init__(self, *args, **kwargs):
++        wx.html.HtmlWindow.__init__(self, *args, **kwargs)
++        self.Bind(wx.html.EVT_HTML_LINK_CLICKED, self.OnLinkClicked)
+ 
+     def OnLinkClicked(self, link):
+-        webbrowser.open(link.GetHref())
++        webbrowser.open(link.GetLinkInfo().GetHref())
+ 
+ 
+ # Run the program
+diff --git a/chapter_9_drag_and_drop/recipe_9_1_drag_and_drop/file_drop_target.py b/chapter_9_drag_and_drop/recipe_9_1_drag_and_drop/file_drop_target.py
+index 62bbfee..294fae7 100644
+--- a/chapter_9_drag_and_drop/recipe_9_1_drag_and_drop/file_drop_target.py
++++ b/chapter_9_drag_and_drop/recipe_9_1_drag_and_drop/file_drop_target.py
+@@ -33,7 +33,7 @@ class DnDPanel(wx.Panel):
+         file_drop_target = MyFileDropTarget(self)
+         lbl = wx.StaticText(self, label="Drag some files here:")
+         self.fileTextCtrl = wx.TextCtrl(self,
+-                                        style=wx.TE_MULTILINE|wx.HSCROLL|wx.TE_READONLY)
++                                        style=wx.TE_MULTILINE|wx.HSCROLL)
+         self.fileTextCtrl.SetDropTarget(file_drop_target)
+ 
+         sizer = wx.BoxSizer(wx.VERTICAL)
+diff --git a/chapter_9_drag_and_drop/recipe_9_1_drag_and_drop/py_drop_target.py b/chapter_9_drag_and_drop/recipe_9_1_drag_and_drop/py_drop_target.py
+index aaea47c..1d80bdd 100644
+--- a/chapter_9_drag_and_drop/recipe_9_1_drag_and_drop/py_drop_target.py
++++ b/chapter_9_drag_and_drop/recipe_9_1_drag_and_drop/py_drop_target.py
+@@ -37,7 +37,7 @@ class DnDPanel(wx.Panel):
+         lbl.SetFont(font)
+         self.dropText = wx.TextCtrl(
+             self, size=(200,200), 
+-            style=wx.TE_MULTILINE|wx.HSCROLL|wx.TE_READONLY)
++            style=wx.TE_MULTILINE|wx.HSCROLL)
+         dt = MyURLDropTarget(self.dropText)
+         self.dropText.SetDropTarget(dt)
+         firstSizer = self.addWidgetsToSizer([lbl, self.dropText])
+diff --git a/chapter_9_drag_and_drop/recipe_9_1_drag_and_drop/text_drop_target.py b/chapter_9_drag_and_drop/recipe_9_1_drag_and_drop/text_drop_target.py
+index 1b90049..cbfafe3 100644
+--- a/chapter_9_drag_and_drop/recipe_9_1_drag_and_drop/text_drop_target.py
++++ b/chapter_9_drag_and_drop/recipe_9_1_drag_and_drop/text_drop_target.py
+@@ -25,7 +25,7 @@ class DnDPanel(wx.Panel):
+ 
+         lbl = wx.StaticText(self, label="Drag some text here:")
+         self.myTextCtrl = wx.TextCtrl(
+-            self, style=wx.TE_MULTILINE|wx.HSCROLL|wx.TE_READONLY)
++            self, style=wx.TE_MULTILINE|wx.HSCROLL)
+         text_dt = MyTextDropTarget(self.myTextCtrl)
+         self.myTextCtrl.SetDropTarget(text_dt)
+ 
